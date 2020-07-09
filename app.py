@@ -14,6 +14,17 @@ heroku = Heroku(app)
 CORS(app)
 
 
+class Character(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(), nullable=False)
+    character_class = db.Column(db.String(), nullable=False)
+    hitpoints = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, name, character_class):
+        self.character_class = character_class,
+        self.hitpoints = 100
+        self.name = name
+
 
 if __name__ == "__main__":
     app.run(debug=True)
