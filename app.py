@@ -21,9 +21,9 @@ class Character(db.Model):
     hitpoints = db.Column(db.Integer, nullable=False)
 
     def __init__(self, name, character_class):
+        self.name = name
         self.character_class = character_class,
         self.hitpoints = 100
-        self.name = name
 
 class CharacterSchema(ma.Schema):
     class Meta:
@@ -64,6 +64,28 @@ def delete_character_by_id(id):
     db.session.delete(character)
     db.session.commit()
     return jsonify("Character Deleted")
+
+@app.route("/character/update/<id>", methods=["PUT"])
+def update_character_by_id(id):
+    if request.content_type != "application/json":
+        return jsonify("Error: Data must be sent as JSON")
+
+    put_data = request.get_json()
+    name = put_data.get("name")
+    character_class = put_data.get("character_class")
+    hitpoints = put_data.get("hitpoints")
+
+    character = db.session.query(Character).filter(Character.id == id).first()
+    if name is not None:
+        character.name = name
+    if character_class is not None:
+        character.character_class = character_class
+    if hitpoints is not None:
+        character.hitpoints = hitpoints
+
+    db.session.commit()
+
+    return jsonify("Character Updated")
 
 
 if __name__ == "__main__":
